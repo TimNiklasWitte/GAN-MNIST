@@ -98,7 +98,7 @@ def log(train_summary_writer, gan, epoch):
 
     num_generated_imgs = 32
     noise = tf.random.uniform(minval=-1, maxval=1, shape=(num_generated_imgs, gan.generator.noise_dim))
-    generated_imgs = gan.generator(noise)
+    generated_imgs = gan.generator(noise, training=False)
   
     #
     # Write to TensorBoard
