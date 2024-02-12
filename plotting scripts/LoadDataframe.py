@@ -30,7 +30,7 @@ def load_dataframe(log_dir):
 
     image_dict_arr = df['generated imgs'].apply(SummaryReader.tensor_to_image)
 
-    for idx in range(25):
+    for idx in range(30):
         df.loc[idx, 'generated imgs'] = image_dict_arr.iloc[idx]['image']
 
 
