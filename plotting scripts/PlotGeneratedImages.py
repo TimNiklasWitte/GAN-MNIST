@@ -9,21 +9,32 @@ def main():
 
     df = load_dataframe(log_dir)
 
-    fig, axes = plt.subplots(1, 2)
+    num_imgs_per_epoch = 5 #df.loc[0, "generated imgs"].shape[0]
+    num_epochs = df.loc[:, "generated imgs"].shape[0]
+
+
+    fig, axes = plt.subplots(5, 5)
     
-    sns.lineplot(data=df.loc[:, ["discriminator fake loss"]], ax=axes[0], markers=True, legend=None)
-    axes[0].set_title("Discriminator fake loss")
+    for idx in range(5):
+        for epoch in range(5):
+            img = df.loc[epoch*5, "generated imgs"]
+            img = img[idx]
+            axes[idx, epoch].imshow(img)
 
-    sns.lineplot(data=df.loc[:, ["discriminator real loss"]], ax=axes[1], markers=True, legend=None)
-    axes[1].set_title("Discriminator real loss")
+    plt.show() 
+    # sns.lineplot(data=df.loc[:, ["discriminator fake loss"]], ax=axes[0], markers=True, legend=None)
+    # axes[0].set_title("Discriminator fake loss")
 
-    # grid
-    for ax in axes.flatten():
-        ax.grid()
+    # sns.lineplot(data=df.loc[:, ["discriminator real loss"]], ax=axes[1], markers=True, legend=None)
+    # axes[1].set_title("Discriminator real loss")
 
-    plt.tight_layout()
-    plt.savefig("../plots/DiscriminatorLosses.png")
-    plt.show()
+    # # grid
+    # for ax in axes.flatten():
+    #     ax.grid()
+
+    # plt.tight_layout()
+    # plt.savefig("../plots/DiscriminatorLosses.png")
+    # plt.show()
 
 if __name__ == "__main__":
     try:
