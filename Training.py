@@ -5,7 +5,7 @@ import datetime
 
 from GAN import *
 
-NUM_EPOCHS = 50
+NUM_EPOCHS = 25
 BATCH_SIZE = 32
 
 def main():
@@ -74,8 +74,8 @@ def log(train_summary_writer, gan, epoch):
     discriminator_real_loss = gan.discriminator.metric_real_loss.result()
     
     # Accuracy
-    discriminator_fake_accuracy = gan.discriminator.metric_fake_loss.result()
-    discriminator_real_accuracy = gan.discriminator.metric_real_loss.result()
+    discriminator_fake_accuracy = gan.discriminator.metric_fake_accuracy.result()
+    discriminator_real_accuracy = gan.discriminator.metric_real_accuracy.result()
 
     #
     # Reset metrices
