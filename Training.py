@@ -5,7 +5,7 @@ import datetime
 
 from GAN import *
 
-NUM_EPOCHS = 25
+NUM_EPOCHS = 30
 BATCH_SIZE = 32
 
 def main():
@@ -42,6 +42,14 @@ def main():
     gan.generator.summary()
 
     #
+    # Init noise
+    # Take always the same noise for generating images
+    # -> evaluation!
+    #
+    num_generated_imgs = 32
+    noise = tf.random.uniform(minval=-1, maxval=1, shape=(num_generated_imgs, gan.generator.noise_dim))
+
+    #
     # Train loop
     #
     for epoch in range(1, NUM_EPOCHS + 1):
@@ -51,13 +59,13 @@ def main():
         for img_real in tqdm.tqdm(train_ds, position=0, leave=True): 
             gan.train_step(img_real)
 
-        log(train_summary_writer, gan, epoch)
+        log(train_summary_writer, gan, noise, epoch)
 
         # Save model (its parameters)
         gan.save_weights(f"./saved_models/trained_weights_{epoch}", save_format="tf")
 
 
-def log(train_summary_writer, gan, epoch):
+def log(train_summary_writer, gan, noise, epoch):
 
     #
     # Get result from metrices
@@ -96,14 +104,12 @@ def log(train_summary_writer, gan, epoch):
     # Generate images
     #
 
-    num_generated_imgs = 32
-    noise = tf.random.uniform(minval=-1, maxval=1, shape=(num_generated_imgs, gan.generator.noise_dim))
     generated_imgs = gan.generator(noise, training=False)
   
     #
     # Write to TensorBoard
     #
-
+    num_generated_imgs = noise.shape[0]
     with train_summary_writer.as_default():
         tf.summary.scalar(f"generator_loss", generator_loss, step=epoch)
 
