@@ -34,7 +34,7 @@ def main():
     gan = GAN()
 
     # Build 
-    gan.discriminator.build(input_shape=(1, 28*28))
+    gan.discriminator.build(input_shape=(1, 32, 32, 1))
     gan.generator.build(input_shape=(1, gan.generator.noise_dim))
     
     # Get overview of number of parameters
@@ -59,14 +59,36 @@ def main():
 
 def log(train_summary_writer, gan, epoch):
 
+    #
+    # Get result from metrices
+    # 
+
+    # Generator
     generator_loss = gan.generator.metric_loss.result()
+
+    # Discriminator
+
+    # Loss
     discriminator_loss = gan.discriminator.metric_loss.result()
     discriminator_fake_loss = gan.discriminator.metric_fake_loss.result()
     discriminator_real_loss = gan.discriminator.metric_real_loss.result()
+    
+    # Accuracy
+    discriminator_fake_accuracy = gan.discriminator.metric_fake_loss.result()
+    discriminator_real_accuracy = gan.discriminator.metric_real_loss.result()
 
+    #
+    # Reset metrices
+    #
+
+    # Generator 
     gan.generator.metric_loss.reset_states()
 
+    # Discriminator
     gan.discriminator.metric_loss.reset_states()
+    gan.discriminator.metric_fake_loss.reset_states()
+    gan.discriminator.metric_real_loss.reset_states()
+
     gan.discriminator.metric_fake_loss.reset_states()
     gan.discriminator.metric_real_loss.reset_states()
 
@@ -74,11 +96,10 @@ def log(train_summary_writer, gan, epoch):
     # Generate images
     #
 
-    num_generated_imgs = 16
-    noise = tf.random.normal(shape=(num_generated_imgs, gan.generator.noise_dim))
+    num_generated_imgs = 32
+    noise = tf.random.uniform(minval=-1, maxval=1, shape=(num_generated_imgs, gan.generator.noise_dim))
     generated_imgs = gan.generator(noise)
-    generated_imgs = tf.reshape(generated_imgs, shape=(num_generated_imgs, 28,28,1))
-    
+  
     #
     # Write to TensorBoard
     #
@@ -90,27 +111,33 @@ def log(train_summary_writer, gan, epoch):
         tf.summary.scalar(f"discriminator_fake_loss", discriminator_fake_loss, step=epoch)
         tf.summary.scalar(f"discriminator_real_loss", discriminator_real_loss, step=epoch)
 
+        tf.summary.scalar(f"discriminator_fake_accuracy", discriminator_fake_accuracy, step=epoch)
+        tf.summary.scalar(f"discriminator_real_accuracy", discriminator_real_accuracy, step=epoch)
+
         tf.summary.image(name="generated_imgs",data = generated_imgs, step=epoch, max_outputs=num_generated_imgs)
         
 
     #
     # Output
     #
-    print(f"         generator_loss: {generator_loss}")
-    print(f"     discriminator_loss: {discriminator_loss}")
-    print(f"discriminator_fake_loss: {discriminator_fake_loss}")
-    print(f"discriminator_real_loss: {discriminator_real_loss}")
- 
+    print(f"             generator_loss: {generator_loss}")
+    print(f"         discriminator_loss: {discriminator_loss}")
+    print(f"    discriminator_fake_loss: {discriminator_fake_loss}")
+    print(f"    discriminator_real_loss: {discriminator_real_loss}")
+    print(f"discriminator_fake_accuracy: {discriminator_fake_accuracy}")
+    print(f"discriminator_real_accuracy: {discriminator_real_accuracy}")
  
 def prepare_data(dataset):
 
-    dataset = dataset.filter(lambda img, label: label == 0) # only '0' digits
+    #dataset = dataset.filter(lambda img, label: label == 0) # only '0' digits
 
     # Remove label
     dataset = dataset.map(lambda img, label: img)
 
     # Flatten
-    dataset = dataset.map(lambda img: tf.reshape(img, (-1,)))
+    #dataset = dataset.map(lambda img: tf.reshape(img, (-1,)))
+
+    dataset = dataset.map(lambda img: tf.image.resize(img, [32,32]) )
 
     # Convert data from uint8 to float32
     dataset = dataset.map(lambda img: tf.cast(img, tf.float32) )
