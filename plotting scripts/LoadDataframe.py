@@ -30,13 +30,9 @@ def load_dataframe(log_dir):
 
     image_dict_arr = df['generated imgs'].apply(SummaryReader.tensor_to_image)
 
-    for idx in range(30):
+    num_epochs = df.to_numpy().shape[0]
+
+    for idx in range(num_epochs):
         df.loc[idx, 'generated imgs'] = image_dict_arr.iloc[idx]['image']
 
-
-
-    
-    #print(image_dict_arr.iloc[0]['image'].shape)
-    # #df['generated imgs'] = image_dict_arr.apply(lambda x: x['generated imgs'])
-    # print(image_dict_arr)
     return df

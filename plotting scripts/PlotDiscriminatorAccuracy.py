@@ -9,13 +9,15 @@ def main():
 
     df = load_dataframe(log_dir)
 
-    fig, axes = plt.subplots(1, 2)
+    fig, axes = plt.subplots(1, 2, figsize=(15,5))
     
-    sns.lineplot(data=df.loc[:, ["discriminator fake accuracy"]], ax=axes[0], markers=True, legend=None)
+    lineplot_1 = sns.lineplot(data=df.loc[:, ["discriminator fake accuracy"]], ax=axes[0], legend=None)
     axes[0].set_title("Discriminator fake accuracy")
+    lineplot_1.set(ylim=(0.6, 1))
 
-    sns.lineplot(data=df.loc[:, ["discriminator real accuracy"]], ax=axes[1], markers=True, legend=None)
+    lineplot_2 = sns.lineplot(data=df.loc[:, ["discriminator real accuracy"]], ax=axes[1], legend=None)
     axes[1].set_title("Discriminator real accuracy")
+    lineplot_2.set(ylim=(0.6, 1))
 
     # grid
     for ax in axes.flatten():
