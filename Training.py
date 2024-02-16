@@ -5,7 +5,7 @@ import datetime
 
 from GAN import *
 
-NUM_EPOCHS = 30
+NUM_EPOCHS = 150
 BATCH_SIZE = 32
 
 def main():
@@ -61,8 +61,9 @@ def main():
 
         log(train_summary_writer, gan, noise, epoch)
 
-        # Save model (its parameters)
-        gan.save_weights(f"./saved_models/trained_weights_{epoch}", save_format="tf")
+        if epoch % 50 == 0:
+            # Save model (its parameters)
+            gan.save_weights(f"./saved_models/trained_weights_{epoch}", save_format="tf")
 
 
 def log(train_summary_writer, gan, noise, epoch):
@@ -135,7 +136,7 @@ def log(train_summary_writer, gan, noise, epoch):
  
 def prepare_data(dataset):
 
-    #dataset = dataset.filter(lambda img, label: label == 0) # only '0' digits
+    dataset = dataset.filter(lambda img, label: label == 0) # only '0' digits
 
     # Remove label
     dataset = dataset.map(lambda img, label: img)

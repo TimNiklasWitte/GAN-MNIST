@@ -6,17 +6,17 @@ class Discriminator(tf.keras.Model):
         super(Discriminator, self).__init__()
 
         self.layer_list = [
-            tf.keras.layers.Conv2D(filters=32, kernel_size=(3, 3), padding='same'),
+            tf.keras.layers.Conv2D(filters=4, kernel_size=(3, 3), padding='same'),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dropout(0.3),
             tf.keras.layers.LeakyReLU(),
 
-            tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), padding='same'),
+            tf.keras.layers.Conv2D(filters=8, kernel_size=(3, 3), padding='same'),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dropout(0.3),
             tf.keras.layers.LeakyReLU(),
             
-            tf.keras.layers.Conv2D(filters=128, kernel_size=(3, 3), padding='same'),
+            tf.keras.layers.Conv2D(filters=16, kernel_size=(3, 3), padding='same'),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dropout(0.3),
             tf.keras.layers.LeakyReLU(),

@@ -6,17 +6,17 @@ class Generator(tf.keras.Model):
         super(Generator, self).__init__()
 
         self.layer_list = [
-            tf.keras.layers.Dense(4*4*128, use_bias=False),
+            tf.keras.layers.Dense(4*4*256, use_bias=False),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.LeakyReLU(),
 
-            tf.keras.layers.Reshape((4, 4, 128)),
+            tf.keras.layers.Reshape((4, 4, 256)),
+
+            tf.keras.layers.Conv2DTranspose(128, (3, 3), strides=(2, 2), padding='same', use_bias=False),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.LeakyReLU(),
 
             tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', use_bias=False),
-            tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.LeakyReLU(),
-
-            tf.keras.layers.Conv2DTranspose(32, (3, 3), strides=(2, 2), padding='same', use_bias=False),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.LeakyReLU(),
 
